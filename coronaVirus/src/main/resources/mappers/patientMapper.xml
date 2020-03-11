@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper namespace="com.myweb.corona.mapper.PaInfoMapper">
+	<select id="getInfo" resultType="com.myweb.corona.dto.PaInfo">
+		SELECT *
+		FROM pa_info
+	</select>
+	
+	<select id="getRoute" parameterType="integer" resultType="com.myweb.corona.dto.PaRoute">
+		SELECT x,y,content,date
+		FROM pa_route
+		WHERE pa_no = #{no}
+	</select>
+	
+	<insert id="addPatient" parameterType="com.myweb.corona.dto.PaInfo" useGeneratedKeys="true" keyProperty="no">
+		INSERT INTO pa_info(name,comment,color) VALUES(#{name},#{comment},#{color})
+		
+		<selectKey keyProperty="no" resultType="java.lang.Integer">
+        SELECT LAST_INSERT_ID() as no
+    	</selectKey>
+	</insert>
+	
+	<insert id="addRoute" parameterType="java.util.Map">
+		insert into pa_route(pa_no,x,y,content,date)
+        values
+        <foreach collection="routes" item="item" separator=" , ">
+            (#{item.paNo}, #{item.x}, #{item.y}, #{item.content}, #{item.date})
+        </foreach>
+	</insert>
+	
+</mapper>
